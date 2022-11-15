@@ -1,0 +1,1 @@
+{{ if .IsLink }}[{{end}}{{ if .Annotations.Bold }}**{{end}}{{ if .Annotations.Italic }}*{{end}}{{ if .Annotations.Code }}`{{end}}{{ if .Annotations.Strikethrough }}~~{{end}}{{.Text}}{{ if .Annotations.Bold }}**{{end}}{{ if .Annotations.Italic }}*{{end}}{{ if .Annotations.Code }}`{{end}}{{ if .Annotations.Strikethrough }}~~{{end}}{{ if .IsLink }}]({{ .Link }}){{end}}

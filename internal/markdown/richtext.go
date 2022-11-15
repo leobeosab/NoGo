@@ -1,0 +1,70 @@
+//TODO: Implement color
+package markdown
+
+import (
+	"bytes"
+	"github.com/dstotijn/go-notion"
+	"text/template"
+)
+
+type RichText struct {
+	IsLink      bool
+	Link        string
+	Annotations RichTextAnnotations
+	Text        string
+}
+
+type RichTextAnnotations struct {
+	Bold          bool
+	Italic        bool
+	Code          bool
+	Strikethrough bool
+}
+
+func RichTextToString(rt notion.RichText) (string, error) {
+
+	link := ""
+	if rt.HRef != nil {
+		link = *rt.HRef
+	}
+
+	mdRt := RichText{
+		IsLink: rt.HRef != nil,
+		Link:   link,
+		Text:   rt.PlainText,
+		Annotations: RichTextAnnotations{
+			Bold:          rt.Annotations.Bold,
+			Italic:        rt.Annotations.Italic,
+			Strikethrough: rt.Annotations.Strikethrough,
+			Code:          rt.Annotations.Code,
+		},
+	}
+
+	t, err := template.ParseFiles("blocks/RichTextTemplate.md")
+	if err != nil {
+		return "", err
+	}
+
+	var result bytes.Buffer
+	err = t.Execute(&result, mdRt)
+	if err != nil {
+		return "", err
+	}
+
+	return result.String(), nil
+}
+
+func RichTextArrToString(rt []notion.RichText) (string, error) {
+
+	outputStr := ""
+	for _, t := range rt {
+		result, err := RichTextToString(t)
+		if err != nil {
+			return "", err
+		}
+
+		outputStr += result
+	}
+
+	return outputStr, nil
+}

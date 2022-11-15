@@ -12,27 +12,26 @@ type Paragraph struct {
 }
 
 func newParagraph(block notion.ParagraphBlock) Paragraph {
-	s := ""
-
-	for _, text := range block.RichText {
-		s += text.PlainText
+	paragraphStr, err := RichTextArrToString(block.RichText)
+	if err != nil {
+		panic(err)
 	}
 
 	return Paragraph{
-		Text: s,
+		Text: paragraphStr,
 	}
 }
 
 func (p Page) AddParagraphToPage(block *notion.ParagraphBlock) error {
 	md := newParagraph(*block)
 
-	template, err := template.ParseFiles("blocks/ParagraphTemplate.md")
+	t, err := template.ParseFiles("blocks/ParagraphTemplate.md")
 	if err != nil {
 		return err
 	}
 
 	var mdBuffer bytes.Buffer
-	err = template.Execute(&mdBuffer, md)
+	err = t.Execute(&mdBuffer, md)
 	if err != nil {
 		return err
 	}

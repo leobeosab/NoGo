@@ -12,10 +12,9 @@ type heading1markdown struct {
 }
 
 func newHeading1Markdown(block notion.Heading1Block) heading1markdown {
-	s := ""
-
-	for _, text := range block.RichText {
-		s += text.PlainText
+	s, err := RichTextArrToString(block.RichText)
+	if err != nil {
+		panic(err)
 	}
 
 	return heading1markdown{
