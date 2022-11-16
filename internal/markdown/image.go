@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"github.com/dstotijn/go-notion"
 	"github.com/leobeosab/notion-blogger/internal/utilities"
+	"os"
 	"text/template"
 )
 
@@ -45,7 +46,7 @@ func (p *Page) newImage(block notion.ImageBlock) Image {
 func (p *Page) AddImageToPage(block *notion.ImageBlock) error {
 	md := p.newImage(*block)
 
-	template, err := template.ParseFiles("blocks/ImageTemplate.md")
+	template, err := template.ParseFiles(os.Getenv("BLOCKS_DIRECTORY") + "/ImageTemplate.md")
 	if err != nil {
 		return err
 	}

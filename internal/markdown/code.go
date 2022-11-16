@@ -3,6 +3,7 @@ package markdown
 import (
 	"bytes"
 	"github.com/dstotijn/go-notion"
+	"os"
 	"text/template"
 )
 
@@ -27,7 +28,7 @@ func newCode(block notion.CodeBlock) Code {
 func (p *Page) AddCodeToPage(block *notion.CodeBlock) error {
 	md := newCode(*block)
 
-	template, err := template.ParseFiles("blocks/CodeTemplate.md")
+	template, err := template.ParseFiles(os.Getenv("BLOCKS_DIRECTORY") + "/CodeTemplate.md")
 	if err != nil {
 		return err
 	}

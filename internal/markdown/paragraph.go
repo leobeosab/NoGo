@@ -3,6 +3,7 @@ package markdown
 import (
 	"bytes"
 	"github.com/dstotijn/go-notion"
+	"os"
 	"text/template"
 )
 
@@ -24,7 +25,7 @@ func newParagraph(block notion.ParagraphBlock) Paragraph {
 func (p *Page) AddParagraphToPage(block *notion.ParagraphBlock) error {
 	md := newParagraph(*block)
 
-	t, err := template.ParseFiles("blocks/ParagraphTemplate.md")
+	t, err := template.ParseFiles(os.Getenv("BLOCKS_DIRECTORY") + "/ParagraphTemplate.md")
 	if err != nil {
 		return err
 	}

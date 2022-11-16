@@ -11,11 +11,6 @@ import (
 )
 
 func main() {
-	os.Setenv("ASSET_PATH", "assets/img/posts/$PAGE_URI$/")
-
-	//	mdDirectory := os.Getenv("MD_DIRECTORY")
-	//	noOutput := os.Getenv("NO_OUTPUT_ASSETS")
-
 	notionSecret := os.Getenv("NOTION_SECRET")
 	conn := notion.NewConnection(notionSecret)
 

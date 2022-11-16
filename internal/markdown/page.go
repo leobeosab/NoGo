@@ -13,8 +13,8 @@ type Page struct {
 	tags           []string
 	categories     []string
 	Assets         []PageAsset
-	AssetDirectory string
-	AssetURL       string
+	AssetDirectory string // Actual base directory to write to, usually static/...
+	AssetURL       string // URL to base directory. For example if AssetDirectory was static/images/ AssetURL may just be images/ depending on your static site generator
 }
 
 type PageAsset struct {

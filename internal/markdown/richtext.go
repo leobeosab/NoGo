@@ -4,6 +4,7 @@ package markdown
 import (
 	"bytes"
 	"github.com/dstotijn/go-notion"
+	"os"
 	"text/template"
 )
 
@@ -40,7 +41,7 @@ func RichTextToString(rt notion.RichText) (string, error) {
 		},
 	}
 
-	t, err := template.ParseFiles("blocks/RichTextTemplate.md")
+	t, err := template.ParseFiles(os.Getenv("BLOCKS_DIRECTORY") + "/RichTextTemplate.md")
 	if err != nil {
 		return "", err
 	}
@@ -66,5 +67,5 @@ func RichTextArrToString(rt []notion.RichText) (string, error) {
 		outputStr += result
 	}
 
-	return outputStr, nil
+	return outputStr + "\n", nil
 }
