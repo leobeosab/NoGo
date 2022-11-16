@@ -11,6 +11,8 @@ import (
 )
 
 func main() {
+	os.Setenv("ASSET_PATH", "assets/img/posts/$PAGE_URI$/$FILE_NAME$")
+
 	notionSecret := os.Getenv("NOTION_SECRET")
 	conn := notion.NewConnection(notionSecret)
 
@@ -30,7 +32,6 @@ func main() {
 	// Extract this to a functionforloop
 	for _, block := range blocks {
 		blockType := strings.Replace(reflect.TypeOf(block).String(), "*notion.", "", -1)
-		fmt.Println(blockType)
 		switch blockType {
 		case "Heading1Block":
 			err := page.AddHeading1ToPage(block.(*not.Heading1Block))
@@ -52,7 +53,17 @@ func main() {
 				panic(err)
 			}
 			break
+
+		case "ImageBlock":
+			err := page.AddImageToPage(block.(*not.ImageBlock))
+			if err != nil {
+				panic(err)
+			}
+			break
 		}
 	}
+
+	fmt.Println(page.Build())
+	// TODO: Download assets
 
 }

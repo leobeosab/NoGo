@@ -2,7 +2,6 @@ package markdown
 
 import (
 	"bytes"
-	"fmt"
 	"github.com/dstotijn/go-notion"
 	"text/template"
 )
@@ -22,7 +21,7 @@ func newHeading1Markdown(block notion.Heading1Block) heading1markdown {
 	}
 }
 
-func (p Page) AddHeading1ToPage(block *notion.Heading1Block) error {
+func (p *Page) AddHeading1ToPage(block *notion.Heading1Block) error {
 	md := newHeading1Markdown(*block)
 
 	template, err := template.ParseFiles("blocks/Heading1Template.md")
@@ -36,8 +35,7 @@ func (p Page) AddHeading1ToPage(block *notion.Heading1Block) error {
 		return err
 	}
 
-	p.sbContent.WriteString(mdBuffer.String())
-	fmt.Println(mdBuffer.String())
+	p.AddBlock(mdBuffer.String())
 
 	return nil
 }

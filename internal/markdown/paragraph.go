@@ -2,7 +2,6 @@ package markdown
 
 import (
 	"bytes"
-	"fmt"
 	"github.com/dstotijn/go-notion"
 	"text/template"
 )
@@ -22,7 +21,7 @@ func newParagraph(block notion.ParagraphBlock) Paragraph {
 	}
 }
 
-func (p Page) AddParagraphToPage(block *notion.ParagraphBlock) error {
+func (p *Page) AddParagraphToPage(block *notion.ParagraphBlock) error {
 	md := newParagraph(*block)
 
 	t, err := template.ParseFiles("blocks/ParagraphTemplate.md")
@@ -30,14 +29,13 @@ func (p Page) AddParagraphToPage(block *notion.ParagraphBlock) error {
 		return err
 	}
 
-	var mdBuffer bytes.Buffer
-	err = t.Execute(&mdBuffer, md)
+	var buff bytes.Buffer
+	err = t.Execute(&buff, md)
 	if err != nil {
 		return err
 	}
 
-	p.sbContent.WriteString(mdBuffer.String())
-	fmt.Println(mdBuffer.String())
+	p.AddBlock(buff.String())
 
 	return nil
 }
