@@ -1,5 +1,5 @@
 <figure>
-    <img src="{{ .DownloadPath }}" />
+    <img src="{{ .AssetURL }}{{ .FileName }}" />
     <figcaption>
         {{ .Caption }} 
     </figcaption>

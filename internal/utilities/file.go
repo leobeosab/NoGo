@@ -2,6 +2,10 @@ package utilities
 
 import (
 	"errors"
+	"fmt"
+	"io"
+	"log"
+	"net/http"
 	"os"
 	"regexp"
 	"strings"
@@ -23,4 +27,31 @@ func GetFileNameFromURL(url string) (string, error) {
 
 func GetAssetPath(file string, pageID string) string {
 	return strings.Replace(strings.Replace(os.Getenv("ASSET_PATH"), "$PAGE_URI$", pageID, -1), "$FILE_NAME$", file, -1)
+}
+
+func DownloadFile(download_url string, output_path string) {
+	file, err := os.Create(output_path)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	client := http.Client{}
+
+	resp, err := client.Get(download_url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	size, err := io.Copy(file, resp.Body)
+
+	defer file.Close()
+	fmt.Printf("Downloaded asset \nFrom: %s\nTo: %s\nSize: %d", download_url, output_path, size)
+}
+
+func MakeDirectoryIfNotExists(path string) error {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return os.MkdirAll(path, os.ModeDir|0755)
+	}
+	return nil
 }

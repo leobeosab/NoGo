@@ -11,7 +11,10 @@ import (
 )
 
 func main() {
-	os.Setenv("ASSET_PATH", "assets/img/posts/$PAGE_URI$/$FILE_NAME$")
+	os.Setenv("ASSET_PATH", "assets/img/posts/$PAGE_URI$/")
+
+	//	mdDirectory := os.Getenv("MD_DIRECTORY")
+	//	noOutput := os.Getenv("NO_OUTPUT_ASSETS")
 
 	notionSecret := os.Getenv("NOTION_SECRET")
 	conn := notion.NewConnection(notionSecret)
@@ -22,8 +25,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Println(pages)
 
 	blocks, err := conn.FetchPageBlocks((*pages)[0].ID)
 
@@ -64,6 +65,6 @@ func main() {
 	}
 
 	fmt.Println(page.Build())
-	// TODO: Download assets
 
+	page.DownloadAssets("./ignore/")
 }

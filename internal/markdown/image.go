@@ -8,12 +8,13 @@ import (
 )
 
 type Image struct {
-	Caption      string
-	HostedURL    string
-	DownloadPath string
+	Caption   string
+	HostedURL string
+	AssetURL  string
+	FileName  string
 }
 
-func newImage(block notion.ImageBlock, pageId string) Image {
+func (p *Page) newImage(block notion.ImageBlock) Image {
 
 	var hostedUrl string
 	if block.File != nil {
@@ -28,22 +29,21 @@ func newImage(block notion.ImageBlock, pageId string) Image {
 		panic(err)
 	}
 
-	downloadPath := utilities.GetAssetPath(fileName, pageId)
-
 	s, err := RichTextArrToString(block.Caption)
 	if err != nil {
 		panic(err)
 	}
 
 	return Image{
-		Caption:      s,
-		HostedURL:    hostedUrl,
-		DownloadPath: downloadPath,
+		Caption:   s,
+		HostedURL: hostedUrl,
+		FileName:  fileName,
+		AssetURL:  p.AssetURL,
 	}
 }
 
 func (p *Page) AddImageToPage(block *notion.ImageBlock) error {
-	md := newImage(*block, p.ID)
+	md := p.newImage(*block)
 
 	template, err := template.ParseFiles("blocks/ImageTemplate.md")
 	if err != nil {
@@ -59,6 +59,6 @@ func (p *Page) AddImageToPage(block *notion.ImageBlock) error {
 	p.AddBlock(mdBuffer.String())
 
 	// Add asset to the page for downloading
-	p.AddAsset(md.HostedURL, md.DownloadPath)
+	p.AddAsset(md.HostedURL, md.FileName)
 	return nil
 }
