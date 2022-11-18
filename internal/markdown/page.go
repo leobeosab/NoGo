@@ -1,8 +1,10 @@
 package markdown
 
 import (
+	"github.com/dstotijn/go-notion"
 	"github.com/leobeosab/notion-blogger/internal/utilities"
 	"os"
+	"reflect"
 	"strings"
 )
 
@@ -33,6 +35,43 @@ func NewPage(title string) *Page {
 		AssetDirectory: strings.Replace(os.Getenv("ASSET_PATH"), "$PAGE_URI$", id, -1),
 		AssetURL:       strings.Replace(os.Getenv("ASSET_URL"), "$PAGE_URI$", id, -1),
 	}
+}
+
+func (p *Page) ImportNotionBlocks(blocks []notion.Block) error {
+	for _, block := range blocks {
+		blockType := strings.Replace(reflect.TypeOf(block).String(), "*notion.", "", -1)
+		switch blockType {
+		case "Heading1Block":
+			err := p.AddHeading1ToPage(block.(*notion.Heading1Block))
+			if err != nil {
+				return err
+			}
+			break
+
+		case "ParagraphBlock":
+			err := p.AddParagraphToPage(block.(*notion.ParagraphBlock))
+			if err != nil {
+				return err
+			}
+			break
+
+		case "CodeBlock":
+			err := p.AddCodeToPage(block.(*notion.CodeBlock))
+			if err != nil {
+				return err
+			}
+			break
+
+		case "ImageBlock":
+			err := p.AddImageToPage(block.(*notion.ImageBlock))
+			if err != nil {
+				return err
+			}
+			break
+		}
+	}
+
+	return nil
 }
 
 func (p *Page) AddAsset(contentURL string, fileName string) {
@@ -67,6 +106,5 @@ func (p *Page) DownloadAssets(outputDirectory string) int {
 }
 
 func (p *Page) Build() string {
-
 	return p.sbContent.String()
 }
