@@ -29,16 +29,23 @@ func RichTextToString(rt notion.RichText) (string, error) {
 		link = *rt.HRef
 	}
 
-	mdRt := RichText{
-		IsLink: rt.HRef != nil,
-		Link:   link,
-		Text:   rt.PlainText,
-		Annotations: RichTextAnnotations{
+	var annotations RichTextAnnotations
+	if rt.Annotations == nil {
+		annotations = RichTextAnnotations{}
+	} else {
+		annotations = RichTextAnnotations{
 			Bold:          rt.Annotations.Bold,
 			Italic:        rt.Annotations.Italic,
 			Strikethrough: rt.Annotations.Strikethrough,
 			Code:          rt.Annotations.Code,
-		},
+		}
+	}
+
+	mdRt := RichText{
+		IsLink:      rt.HRef != nil,
+		Link:        link,
+		Text:        rt.PlainText,
+		Annotations: annotations,
 	}
 
 	t, err := template.ParseFiles(os.Getenv("BLOCKS_DIRECTORY") + "/RichTextTemplate.md")

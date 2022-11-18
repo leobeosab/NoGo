@@ -1,6 +1,4 @@
 <figure>
     <img src="{{ .AssetURL }}{{ .FileName }}" />
-    <figcaption>
-        {{ .Caption }} 
-    </figcaption>
+    <figcaption>{{ .Caption }}</figcaption>
 </figure>

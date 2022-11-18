@@ -8,6 +8,8 @@ import (
 
 func TestRichTextToString(t *testing.T) {
 	os.Setenv("BLOCKS_DIRECTORY", "../../blocks")
+	os.Setenv("ASSET_URL", "assets/img/$PAGE")
+	os.Setenv("BLOCKS_DIRECTORY", "../../blocks")
 
 	sampleURL := "https://google.com"
 	inputs := []struct {
@@ -20,7 +22,7 @@ func TestRichTextToString(t *testing.T) {
 				PlainText:   "Hahaha!",
 				Annotations: &notion.Annotations{Bold: true, Italic: true},
 			},
-			expected:   "***Hahaha!***\n",
+			expected:   "***Hahaha!***",
 			testString: "Testing italics and bold",
 		},
 		{
@@ -28,17 +30,16 @@ func TestRichTextToString(t *testing.T) {
 				PlainText:   "Hahaha!",
 				Annotations: &notion.Annotations{Strikethrough: true},
 			},
-			expected:   "~~Hahaha!~~\n",
+			expected:   "~~Hahaha!~~",
 			testString: "Testing strikethrough",
 		},
 		{
 			input: notion.RichText{
-				PlainText:   "Hahaha!",
-				Annotations: &notion.Annotations{},
-				HRef:        &sampleURL,
+				PlainText: "Hahaha!",
+				HRef:      &sampleURL,
 			},
-			expected:   "[Hahaha!](https://google.com)\n",
-			testString: "Testing URL",
+			expected:   "[Hahaha!](https://google.com)",
+			testString: "Testing URL, no annotations",
 		},
 		{
 			input: notion.RichText{
@@ -46,7 +47,7 @@ func TestRichTextToString(t *testing.T) {
 				Annotations: &notion.Annotations{Bold: true, Strikethrough: true, Italic: true},
 				HRef:        &sampleURL,
 			},
-			expected:   "[***~~Hahaha!~~***](https://google.com)\n",
+			expected:   "[***~~Hahaha!~~***](https://google.com)",
 			testString: "Testing all",
 		},
 	}

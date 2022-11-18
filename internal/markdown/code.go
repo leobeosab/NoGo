@@ -19,9 +19,14 @@ func newCode(block notion.CodeBlock) Code {
 		s += text.PlainText
 	}
 
+	language := ""
+	if block.Language != nil {
+		language = *block.Language
+	}
+
 	return Code{
 		Code:     s,
-		Language: *block.Language,
+		Language: language,
 	}
 }
 
