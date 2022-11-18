@@ -12,6 +12,7 @@ type Page struct {
 	sbContent      strings.Builder
 	Title          string
 	ID             string
+	NotionID       string
 	tags           []string
 	categories     []string
 	Assets         []PageAsset
@@ -24,13 +25,14 @@ type PageAsset struct {
 	FileName   string
 }
 
-func NewPage(title string) *Page {
+func NewPage(title string, notionID string) *Page {
 	id := strings.Replace(strings.ToLower(title), " ", "-", -1)
 
 	return &Page{
 		sbContent:      strings.Builder{},
 		Title:          title,
 		ID:             id,
+		NotionID:       notionID,
 		Assets:         make([]PageAsset, 0),
 		AssetDirectory: strings.Replace(os.Getenv("ASSET_PATH"), "$PAGE_URI$", id, -1),
 		AssetURL:       strings.Replace(os.Getenv("ASSET_URL"), "$PAGE_URI$", id, -1),
