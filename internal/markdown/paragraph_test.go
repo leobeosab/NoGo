@@ -51,7 +51,7 @@ func TestPage_AddParagraphToPage(t *testing.T) {
 		expected := item.expected
 		testString := item.testString
 
-		page := NewPage("Test Page 1")
+		page := NewPage("Test Page 1", "")
 		err := page.AddParagraphToPage(&item.notionParagraph)
 		if err != nil {
 			t.Fatalf("ERR: %s \n error: %s\n", testString, err)

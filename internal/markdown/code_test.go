@@ -40,7 +40,7 @@ func TestPage_AddCodeToPage(t *testing.T) {
 		expected := item.expected
 		testString := item.testString
 
-		page := NewPage("Test Page 1")
+		page := NewPage("Test Page 1", "")
 		err := page.AddCodeToPage(&item.notionCode)
 		if err != nil {
 			t.Fatalf("ERR: %s \n error: %s\n", testString, err)
