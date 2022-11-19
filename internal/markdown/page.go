@@ -9,15 +9,16 @@ import (
 )
 
 type Page struct {
-	sbContent      strings.Builder
-	Title          string
-	ID             string
-	NotionID       string
-	tags           []string
-	categories     []string
-	Assets         []PageAsset
-	AssetDirectory string // Actual base directory to write to, usually static/...
-	AssetURL       string // URL to base directory. For example if AssetDirectory was static/images/ AssetURL may just be images/ depending on your static site generator
+	sbContent       strings.Builder
+	Title           string
+	ID              string
+	NotionID        string
+	tags            []string
+	categories      []string
+	Assets          []PageAsset
+	AssetDirectory  string // Actual base directory to write to, usually static/...
+	AssetURL        string // URL to base directory. For example if AssetDirectory was static/images/ AssetURL may just be images/ depending on your static site generator
+	BlocksDirectory string // Optional, filepath to the blocks directory, default is to use embedded markdown
 }
 
 type PageAsset struct {
@@ -25,17 +26,23 @@ type PageAsset struct {
 	FileName   string
 }
 
-func NewPage(title string, notionID string) *Page {
+func NewPage(c *PageContext, title string, notionID string) *Page {
 	id := strings.Replace(strings.ToLower(title), " ", "-", -1)
 
+	blockDirectory := c.Config.BlocksDirectory
+	if blockDirectory != "" && string(blockDirectory[len(blockDirectory)-1]) != "/" {
+		blockDirectory += "/"
+	}
+
 	return &Page{
-		sbContent:      strings.Builder{},
-		Title:          title,
-		ID:             id,
-		NotionID:       notionID,
-		Assets:         make([]PageAsset, 0),
-		AssetDirectory: strings.Replace(os.Getenv("ASSET_PATH"), "$PAGE_URI$", id, -1),
-		AssetURL:       strings.Replace(os.Getenv("ASSET_URL"), "$PAGE_URI$", id, -1),
+		sbContent:       strings.Builder{},
+		Title:           title,
+		ID:              id,
+		NotionID:        notionID,
+		Assets:          make([]PageAsset, 0),
+		AssetDirectory:  strings.Replace(c.Config.AssetDirectory, "$PAGE_URI$", id, -1),
+		AssetURL:        strings.Replace(c.Config.AssetURL, "$PAGE_URI$", id, -1),
+		BlocksDirectory: blockDirectory,
 	}
 }
 

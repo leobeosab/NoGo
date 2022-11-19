@@ -35,7 +35,7 @@ func TestPage_AddImageToPage(t *testing.T) {
 		expected := item.expected
 		testString := item.testString
 
-		page := NewPage("Test Page 1", "")
+		page := NewPage(GenPageContext(), "Test Page 1", "")
 		err := page.AddImageToPage(&item.notionImage)
 		if err != nil {
 			t.Fatalf("ERR: %s \n error: %s\n", testString, err)

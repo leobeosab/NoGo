@@ -6,10 +6,12 @@ import (
 	"github.com/leobeosab/notion-blogger/internal/notion"
 )
 
-func RunNotionMigration(notionSecret string, pageDatabaseID string, migrateStatus string) (int, error) {
-	conn := notion.NewConnection(notionSecret)
+func RunNotionMigrations(config *NotionMigrationsConfig) (int, error) {
+	c := NewNotionMigrationsContext(config)
 
-	pages, err := conn.FetchDatabasePagesBasedOnStatus(migrateStatus, pageDatabaseID)
+	conn := notion.NewConnection(config.NotionSecret)
+
+	pages, err := conn.FetchDatabasePagesBasedOnStatus(config.ReadyStatus, config.DatabaseId)
 	if err != nil {
 		panic(err)
 	}
@@ -17,7 +19,7 @@ func RunNotionMigration(notionSecret string, pageDatabaseID string, migrateStatu
 	pageID := (*pages)[0].ID
 	blocks, err := conn.FetchPageBlocks(pageID)
 
-	page := markdown.NewPage("Oh no", pageID)
+	page := markdown.NewPage(c.PageContext(), "oh yeah", pageID)
 
 	if err = page.ImportNotionBlocks(blocks); err != nil {
 		panic(err)

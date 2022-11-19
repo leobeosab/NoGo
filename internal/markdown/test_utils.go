@@ -1,6 +1,9 @@
 package markdown
 
-import "regexp"
+import (
+	"context"
+	"regexp"
+)
 
 /* StripHTMLWhitespace
 Turns:
@@ -21,4 +24,15 @@ func StripHTMLWhitespace(html string) string {
 	}
 
 	return r.ReplaceAllString(html, "")
+}
+
+func GenPageContext() *PageContext {
+	return &PageContext{
+		C: context.Background(),
+		Config: &PageConfig{
+			BlocksDirectory: "",
+			AssetURL:        "assets/img/posts/$PAGE_URI$/",
+			AssetDirectory:  "static/assets/img/posts/$PAGE_URI$/",
+		},
+	}
 }
