@@ -26,7 +26,7 @@ func TestPage_AddImageToPage(t *testing.T) {
 					{PlainText: "Hello there"},
 				},
 			},
-			expected:   "<figure><img src=\"/assets/img/test-page-1/logo.jpg\" /><figcaption>Hello there</figcaption></figure>",
+			expected:   "<figure><img src=\"/assets/img/posts/test-page-1/logo.jpg\" /><figcaption>Hello there</figcaption></figure>",
 			testString: "Test non external image",
 		},
 	}

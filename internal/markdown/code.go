@@ -3,8 +3,6 @@ package markdown
 import (
 	"bytes"
 	"github.com/dstotijn/go-notion"
-	"os"
-	"text/template"
 )
 
 type Code struct {
@@ -12,7 +10,7 @@ type Code struct {
 	Language string
 }
 
-func newCode(block notion.CodeBlock) Code {
+func (p Page) newCode(block notion.CodeBlock) Code {
 	s := ""
 
 	for _, text := range block.RichText {
@@ -31,9 +29,9 @@ func newCode(block notion.CodeBlock) Code {
 }
 
 func (p *Page) AddCodeToPage(block *notion.CodeBlock) error {
-	md := newCode(*block)
+	md := p.newCode(*block)
 
-	template, err := template.ParseFiles(os.Getenv("BLOCKS_DIRECTORY") + "/CodeTemplate.md")
+	template, err := p.FetchTemplate("CodeTemplate.md")
 	if err != nil {
 		return err
 	}

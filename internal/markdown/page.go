@@ -1,11 +1,15 @@
 package markdown
 
 import (
+	"embed"
+	_ "embed"
+	"fmt"
 	"github.com/dstotijn/go-notion"
 	"github.com/leobeosab/notion-blogger/internal/utilities"
 	"os"
 	"reflect"
 	"strings"
+	"text/template"
 )
 
 type Page struct {
@@ -25,6 +29,9 @@ type PageAsset struct {
 	ContentURL string
 	FileName   string
 }
+
+//go:embed blocks/*
+var pageFiles embed.FS
 
 func NewPage(c *PageContext, title string, notionID string) *Page {
 	id := strings.Replace(strings.ToLower(title), " ", "-", -1)
@@ -116,4 +123,19 @@ func (p *Page) DownloadAssets(outputDirectory string) int {
 
 func (p *Page) Build() string {
 	return p.sbContent.String()
+}
+
+func (p *Page) FetchTemplate(templateName string) (*template.Template, error) {
+	// Check custom exists
+	if _, err := os.Stat(p.BlocksDirectory + templateName); err == nil && p.BlocksDirectory != "" {
+		t, err := template.ParseFiles(p.BlocksDirectory + templateName)
+		if err != nil {
+			fmt.Println("Error parsing custom template: ", err)
+		} else {
+			return t, nil
+		}
+	}
+
+	fmt.Println("Using built-int template for: ", templateName)
+	return template.ParseFS(pageFiles, "blocks/"+templateName)
 }

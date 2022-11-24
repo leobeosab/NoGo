@@ -4,8 +4,6 @@ package markdown
 import (
 	"bytes"
 	"github.com/dstotijn/go-notion"
-	"os"
-	"text/template"
 )
 
 type RichText struct {
@@ -22,7 +20,7 @@ type RichTextAnnotations struct {
 	Strikethrough bool
 }
 
-func RichTextToString(rt notion.RichText) (string, error) {
+func (p Page) RichTextToString(rt notion.RichText) (string, error) {
 
 	link := ""
 	if rt.HRef != nil {
@@ -48,7 +46,7 @@ func RichTextToString(rt notion.RichText) (string, error) {
 		Annotations: annotations,
 	}
 
-	t, err := template.ParseFiles(os.Getenv("BLOCKS_DIRECTORY") + "/RichTextTemplate.md")
+	t, err := p.FetchTemplate("RichTextTemplate.md")
 	if err != nil {
 		return "", err
 	}
@@ -62,11 +60,11 @@ func RichTextToString(rt notion.RichText) (string, error) {
 	return result.String(), nil
 }
 
-func RichTextArrToString(rt []notion.RichText) (string, error) {
+func (p Page) RichTextArrToString(rt []notion.RichText) (string, error) {
 
 	outputStr := ""
 	for _, t := range rt {
-		result, err := RichTextToString(t)
+		result, err := p.RichTextToString(t)
 		if err != nil {
 			return "", err
 		}

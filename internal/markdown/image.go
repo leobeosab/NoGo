@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"github.com/dstotijn/go-notion"
 	"github.com/leobeosab/notion-blogger/internal/utilities"
-	"os"
-	"text/template"
 )
 
 type Image struct {
@@ -30,7 +28,7 @@ func (p *Page) newImage(block notion.ImageBlock) Image {
 		panic(err)
 	}
 
-	s, err := RichTextArrToString(block.Caption)
+	s, err := p.RichTextArrToString(block.Caption)
 	if err != nil {
 		panic(err)
 	}
@@ -46,7 +44,7 @@ func (p *Page) newImage(block notion.ImageBlock) Image {
 func (p *Page) AddImageToPage(block *notion.ImageBlock) error {
 	md := p.newImage(*block)
 
-	template, err := template.ParseFiles(os.Getenv("BLOCKS_DIRECTORY") + "/ImageTemplate.md")
+	template, err := p.FetchTemplate("ImageTemplate.md")
 	if err != nil {
 		return err
 	}

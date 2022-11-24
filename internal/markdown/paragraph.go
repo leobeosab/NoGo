@@ -3,16 +3,14 @@ package markdown
 import (
 	"bytes"
 	"github.com/dstotijn/go-notion"
-	"os"
-	"text/template"
 )
 
 type Paragraph struct {
 	Text string
 }
 
-func newParagraph(block notion.ParagraphBlock) Paragraph {
-	paragraphStr, err := RichTextArrToString(block.RichText)
+func (p Page) newParagraph(block notion.ParagraphBlock) Paragraph {
+	paragraphStr, err := p.RichTextArrToString(block.RichText)
 	if err != nil {
 		panic(err)
 	}
@@ -23,9 +21,9 @@ func newParagraph(block notion.ParagraphBlock) Paragraph {
 }
 
 func (p *Page) AddParagraphToPage(block *notion.ParagraphBlock) error {
-	md := newParagraph(*block)
+	md := p.newParagraph(*block)
 
-	t, err := template.ParseFiles(os.Getenv("BLOCKS_DIRECTORY") + "/ParagraphTemplate.md")
+	t, err := p.FetchTemplate("ParagraphTemplate.md")
 	if err != nil {
 		return err
 	}

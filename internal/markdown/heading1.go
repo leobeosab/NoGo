@@ -3,16 +3,14 @@ package markdown
 import (
 	"bytes"
 	"github.com/dstotijn/go-notion"
-	"os"
-	"text/template"
 )
 
 type heading1markdown struct {
 	Text string
 }
 
-func newHeading1Markdown(block notion.Heading1Block) heading1markdown {
-	s, err := RichTextArrToString(block.RichText)
+func (p Page) newHeading1Markdown(block notion.Heading1Block) heading1markdown {
+	s, err := p.RichTextArrToString(block.RichText)
 	if err != nil {
 		panic(err)
 	}
@@ -23,9 +21,9 @@ func newHeading1Markdown(block notion.Heading1Block) heading1markdown {
 }
 
 func (p *Page) AddHeading1ToPage(block *notion.Heading1Block) error {
-	md := newHeading1Markdown(*block)
+	md := p.newHeading1Markdown(*block)
 
-	template, err := template.ParseFiles(os.Getenv("BLOCKS_DIRECTORY") + "/Heading1Template.md")
+	template, err := p.FetchTemplate("Heading1Template.md")
 	if err != nil {
 		return err
 	}
