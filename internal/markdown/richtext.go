@@ -74,3 +74,12 @@ func (p Page) RichTextArrToString(rt []notion.RichText) (string, error) {
 
 	return outputStr + "\n", nil
 }
+
+func RichTextArrToPlainString(rt []notion.RichText) string {
+	outputStr := ""
+	for _, t := range rt {
+		outputStr += t.PlainText
+	}
+
+	return outputStr
+}

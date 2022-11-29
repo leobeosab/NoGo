@@ -6,6 +6,11 @@ import (
 	"github.com/dstotijn/go-notion"
 )
 
+type PageInfoResponse struct {
+	Title  []notion.RichText
+	Blocks []notion.Block
+}
+
 type Connection struct {
 	client *notion.Client
 }
@@ -49,12 +54,18 @@ func (conn Connection) FetchDatabasePagesBasedOnStatus(status string, databaseId
 }
 
 //TODO: Handle recursion for making sure we  get all of the blocks
-func (conn Connection) FetchPageBlocks(pageId string) ([]notion.Block, error) {
-
-	res, err := conn.client.FindBlockChildrenByID(context.Background(), pageId, nil)
+func (conn Connection) FetchPageInfo(page *notion.Page) (*PageInfoResponse, error) {
+	// Fetch Blocks
+	res, err := conn.client.FindBlockChildrenByID(context.Background(), page.ID, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	return res.Results, nil
+	// Get Title
+	title := page.Properties.(notion.DatabasePageProperties)["Name"].Title
+
+	return &PageInfoResponse{
+		Blocks: res.Results,
+		Title:  title,
+	}, nil
 }

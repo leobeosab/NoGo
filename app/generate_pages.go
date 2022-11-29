@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/leobeosab/notion-blogger/internal/markdown"
 	"github.com/leobeosab/notion-blogger/internal/notion"
+	"log"
 )
 
 func RunNotionMigrations(config *NotionMigrationsConfig) (int, error) {
@@ -16,17 +17,22 @@ func RunNotionMigrations(config *NotionMigrationsConfig) (int, error) {
 		panic(err)
 	}
 
-	pageID := (*pages)[0].ID
-	blocks, err := conn.FetchPageBlocks(pageID)
+	for _, page := range *pages {
+		info, err := conn.FetchPageInfo(&page)
+		if err != nil {
+			log.Println("Could not fetch blocks for page: " + page.URL)
+		}
 
-	page := markdown.NewPage(c.PageContext(), "oh yeah", pageID)
+		mdPage := markdown.NewPage(c.PageContext(), markdown.RichTextArrToPlainString(info.Title), page.ID)
 
-	if err = page.ImportNotionBlocks(blocks); err != nil {
-		panic(err)
+		if err = mdPage.ImportNotionBlocks(info.Blocks); err != nil {
+			log.Println("Could not import blocks for: " + page.URL)
+		}
+
+		fmt.Println(mdPage.Title + ":")
+		fmt.Println(mdPage.Build())
+		mdPage.DownloadAssets(config.OutputDirectory)
 	}
 
-	fmt.Println(page.Build())
-
-	page.DownloadAssets("./ignore/")
 	return 0, nil
 }

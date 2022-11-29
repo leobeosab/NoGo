@@ -12,6 +12,7 @@ type NotionMigrationsConfig struct {
 	DatabaseId      string
 	ReadyStatus     string
 	NotionSecret    string
+	OutputDirectory string
 }
 
 type NotionMigrationsContext struct {

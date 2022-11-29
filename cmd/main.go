@@ -17,7 +17,8 @@ func main() {
 		ReadyStatus:     targetStatus,
 		AssetDirectory:  os.Getenv("ASSET_PATH"),
 		AssetURL:        os.Getenv("ASSET_URL"),
-		BlocksDirectory: "",
+		BlocksDirectory: os.Getenv("BLOCKS_PATH"),
+		OutputDirectory: "./ignore/",
 	}
 
 	_, err := app.RunNotionMigrations(config)
