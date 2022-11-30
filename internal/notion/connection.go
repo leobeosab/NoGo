@@ -7,8 +7,10 @@ import (
 )
 
 type PageInfoResponse struct {
-	Title  []notion.RichText
-	Blocks []notion.Block
+	Title           []notion.RichText
+	Blocks          []notion.Block
+	OutputDirectory []notion.RichText
+	CoverURL        *string
 }
 
 type Connection struct {
@@ -53,6 +55,7 @@ func (conn Connection) FetchDatabasePagesBasedOnStatus(status string, databaseId
 	return &pages.Results, nil
 }
 
+// FetchPageInfo gets all of the blocks, title and custom properties we clue in on
 //TODO: Handle recursion for making sure we  get all of the blocks
 func (conn Connection) FetchPageInfo(page *notion.Page) (*PageInfoResponse, error) {
 	// Fetch Blocks
@@ -64,8 +67,23 @@ func (conn Connection) FetchPageInfo(page *notion.Page) (*PageInfoResponse, erro
 	// Get Title
 	title := page.Properties.(notion.DatabasePageProperties)["Name"].Title
 
+	// Get Output Directory
+	outputDir := page.Properties.(notion.DatabasePageProperties)["Output Directory"].RichText
+
+	// Cover URL
+	var coverURL *string
+	if page.Cover != nil {
+		if page.Cover.File != nil {
+			coverURL = &page.Cover.File.URL
+		} else if page.Cover.External != nil {
+			coverURL = &page.Cover.External.URL
+		}
+	}
+
 	return &PageInfoResponse{
-		Blocks: res.Results,
-		Title:  title,
+		Blocks:          res.Results,
+		Title:           title,
+		OutputDirectory: outputDir,
+		CoverURL:        coverURL,
 	}, nil
 }

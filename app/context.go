@@ -6,13 +6,15 @@ import (
 )
 
 type NotionMigrationsConfig struct {
-	BlocksDirectory string
-	AssetURL        string
-	AssetDirectory  string
-	DatabaseId      string
-	ReadyStatus     string
-	NotionSecret    string
-	OutputDirectory string
+	BlocksDirectory      string
+	AssetURL             string
+	AssetDirectory       string
+	DatabaseId           string
+	ReadyStatus          string
+	NotionSecret         string
+	OutputDirectory      string
+	ContentDirectory     string
+	DefaultPostDirectory string
 }
 
 type NotionMigrationsContext struct {

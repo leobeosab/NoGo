@@ -55,3 +55,16 @@ func MakeDirectoryIfNotExists(path string) error {
 	}
 	return nil
 }
+
+func WriteStringToFile(content string, filePath string) error {
+	f, err := os.Create(filePath)
+	if err != nil {
+		log.Println("Cannot open file: ", filePath)
+		return err
+	}
+
+	defer f.Close()
+
+	_, err = f.WriteString(content)
+	return err
+}

@@ -23,15 +23,27 @@ func RunNotionMigrations(config *NotionMigrationsConfig) (int, error) {
 			log.Println("Could not fetch blocks for page: " + page.URL)
 		}
 
+		// Create Page Base
 		mdPage := markdown.NewPage(c.PageContext(), markdown.RichTextArrToPlainString(info.Title), page.ID)
 
+		// Add Cover if it exists
+		if info.CoverURL != nil {
+			mdPage.AddCover(*info.CoverURL)
+		}
+
+		// Import from Notion
 		if err = mdPage.ImportNotionBlocks(info.Blocks); err != nil {
 			log.Println("Could not import blocks for: " + page.URL)
 		}
 
+		// Build to String
 		fmt.Println(mdPage.Title + ":")
 		fmt.Println(mdPage.Build())
+
+		// Download Assets to directory
 		mdPage.DownloadAssets(config.OutputDirectory)
+
+		// Write to file
 	}
 
 	return 0, nil

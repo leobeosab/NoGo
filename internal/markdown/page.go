@@ -20,9 +20,11 @@ type Page struct {
 	tags            []string
 	categories      []string
 	Assets          []PageAsset
+	Type            string
 	AssetDirectory  string // Actual base directory to write to, usually static/...
 	AssetURL        string // URL to base directory. For example if AssetDirectory was static/images/ AssetURL may just be images/ depending on your static site generator
 	BlocksDirectory string // Optional, filepath to the blocks directory, default is to use embedded markdown
+	CoverURL        string
 }
 
 type PageAsset struct {
@@ -88,6 +90,13 @@ func (p *Page) ImportNotionBlocks(blocks []notion.Block) error {
 	}
 
 	return nil
+}
+
+func (p *Page) AddCover(coverURL string) {
+	coverURLNoQuery := strings.Split(coverURL, "?")[0]
+	fileType := (coverURLNoQuery)[(len(coverURLNoQuery) - 4):]
+	p.CoverURL = coverURL
+	p.AddAsset(coverURL, "cover"+fileType)
 }
 
 func (p *Page) AddAsset(contentURL string, fileName string) {
