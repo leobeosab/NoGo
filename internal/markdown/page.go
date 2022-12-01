@@ -35,6 +35,7 @@ type PageMetadata struct {
 	NotionID      string
 	CoverFileName string
 	CoverAlt      string
+	Type          string
 }
 
 type PageAsset struct {

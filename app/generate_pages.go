@@ -1,9 +1,9 @@
 package app
 
 import (
-	"fmt"
 	"github.com/leobeosab/notion-blogger/internal/markdown"
 	"github.com/leobeosab/notion-blogger/internal/notion"
+	"github.com/leobeosab/notion-blogger/internal/utilities"
 	"log"
 )
 
@@ -47,14 +47,15 @@ func RunNotionMigrations(config *NotionMigrationsConfig) (int, error) {
 			continue
 		}
 
-		// Build to String
-		fmt.Println(mdPage.Title + ":")
-		fmt.Println(mdPage.Build())
-
 		// Download Assets to directory
 		mdPage.DownloadAssets(config.OutputDirectory)
 
 		// Write to file
+		outputDirectory := markdown.RichTextArrToPlainString(info.OutputDirectory)
+		if err = utilities.WriteStringToFile(mdPage.Build(), c.Config.OutputDirectory+c.Config.ContentDirectory+outputDirectory+"/", mdPage.ID+".md"); err != nil {
+			log.Println("Could not write page to file: " + page.URL)
+			continue
+		}
 	}
 
 	return 0, nil
