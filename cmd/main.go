@@ -12,13 +12,14 @@ func main() {
 	targetStatus := os.Getenv("MIGRATE_STATUS")
 
 	config := &app.NotionMigrationsConfig{
-		NotionSecret:    notionSecret,
-		DatabaseId:      databaseId,
-		ReadyStatus:     targetStatus,
-		AssetDirectory:  os.Getenv("ASSET_PATH"),
-		AssetURL:        os.Getenv("ASSET_URL"),
-		BlocksDirectory: os.Getenv("BLOCKS_PATH"),
-		OutputDirectory: "./ignore/",
+		NotionSecret:     notionSecret,
+		DatabaseId:       databaseId,
+		ReadyStatus:      targetStatus,
+		AssetDirectory:   os.Getenv("ASSET_PATH"),
+		AssetURL:         os.Getenv("ASSET_URL"),
+		BlocksDirectory:  os.Getenv("BLOCKS_PATH"),
+		OutputDirectory:  "./ignore/",
+		ContentDirectory: "content/",
 	}
 
 	_, err := app.RunNotionMigrations(config)

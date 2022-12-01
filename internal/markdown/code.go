@@ -42,7 +42,7 @@ func (p *Page) AddCodeToPage(block *notion.CodeBlock) error {
 		return err
 	}
 
-	p.AddBlock(mdBuffer.String())
+	p.AddContent(mdBuffer.String())
 
 	return nil
 }

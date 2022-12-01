@@ -55,7 +55,7 @@ func (p *Page) AddImageToPage(block *notion.ImageBlock) error {
 		return err
 	}
 
-	p.AddBlock(mdBuffer.String())
+	p.AddContent(mdBuffer.String())
 
 	// Add asset to the page for downloading
 	p.AddAsset(md.HostedURL, md.FileName)

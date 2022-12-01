@@ -5,7 +5,7 @@ import (
 )
 
 func Test_EmbedFS(t *testing.T) {
-	page := NewPage(GenPageContext(), "", "")
+	page := GenPage("Test EmbedFS")
 
 	page.FetchTemplate("blocks/CodeTemplate.md")
 }

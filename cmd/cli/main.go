@@ -22,7 +22,7 @@ func main() {
 				Usage: "Status name for pages to convert. IE status:ready on the page property",
 			},
 			&cli.StringFlag{
-				Name:  "asset-path",
+				Name:  "asset-directory",
 				Value: "static/assets/img/posts/$PAGE_URI$/",
 				Usage: "Path to downlaod static assets (ie images) to",
 			},
@@ -32,7 +32,12 @@ func main() {
 				Usage: "Path from root of site for asseets",
 			},
 			&cli.StringFlag{
-				Name:  "output",
+				Name:  "content-directory",
+				Value: "content/",
+				Usage: "Where your md files will be saved to relative to the website directory",
+			},
+			&cli.StringFlag{
+				Name:  "website-directory",
 				Value: "./",
 				Usage: "Working directory of the website",
 			},
@@ -40,12 +45,13 @@ func main() {
 
 		Action: func(c *cli.Context) error {
 			config := &app.NotionMigrationsConfig{
-				NotionSecret:    os.Getenv("NOTION_SECRET"),
-				DatabaseId:      c.String("database-id"),
-				ReadyStatus:     c.String("ready-status"),
-				AssetDirectory:  c.String("asset-path"),
-				AssetURL:        c.String("asset-url"),
-				OutputDirectory: c.String("output"),
+				NotionSecret:     os.Getenv("NOTION_SECRET"),
+				DatabaseId:       c.String("database-id"),
+				ReadyStatus:      c.String("ready-status"),
+				AssetDirectory:   c.String("asset-directory"),
+				AssetURL:         c.String("asset-url"),
+				OutputDirectory:  c.String("website-directory"),
+				ContentDirectory: c.String("content-directory"),
 			}
 
 			_, err := app.RunNotionMigrations(config)

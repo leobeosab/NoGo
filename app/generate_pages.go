@@ -21,19 +21,30 @@ func RunNotionMigrations(config *NotionMigrationsConfig) (int, error) {
 		info, err := conn.FetchPageInfo(&page)
 		if err != nil {
 			log.Println("Could not fetch blocks for page: " + page.URL)
+			continue
 		}
 
 		// Create Page Base
-		mdPage := markdown.NewPage(c.PageContext(), markdown.RichTextArrToPlainString(info.Title), page.ID)
+		title := markdown.RichTextArrToPlainString(info.Title)
+		description := markdown.RichTextArrToPlainString(info.Description)
+		mdPage := markdown.NewPage(c.PageContext(), title, page.ID, description, info.PublishDate)
 
 		// Add Cover if it exists
 		if info.CoverURL != nil {
-			mdPage.AddCover(*info.CoverURL)
+			coverAlt := markdown.RichTextArrToPlainString(info.CoverAlt)
+			mdPage.AddCover(*info.CoverURL, coverAlt)
+		}
+
+		// Set Header
+		if err = mdPage.SetHeader(info.Categories, info.Tags); err != nil {
+			log.Println("Could not set header for: " + page.URL)
+			continue
 		}
 
 		// Import from Notion
 		if err = mdPage.ImportNotionBlocks(info.Blocks); err != nil {
 			log.Println("Could not import blocks for: " + page.URL)
+			continue
 		}
 
 		// Build to String

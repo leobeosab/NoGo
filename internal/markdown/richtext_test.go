@@ -53,7 +53,7 @@ func TestRichTextToString(t *testing.T) {
 	}
 
 	for _, item := range inputs {
-		p := NewPage(GenPageContext(), "", "")
+		p := GenPage(item.testString)
 		result, err := p.RichTextToString(item.input)
 		if err != nil {
 			t.Fatalf("ERR: %s \n error: %s\n", item.testString, err)
@@ -87,7 +87,7 @@ func TestRichTextArrToString(t *testing.T) {
 	}
 
 	for _, item := range inputs {
-		p := NewPage(GenPageContext(), "", "")
+		p := GenPage(item.testString)
 		result, err := p.RichTextArrToString(item.input)
 		if err != nil {
 			t.Fatalf("ERR: %s \n error: %s\n", item.testString, err)

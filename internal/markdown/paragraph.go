@@ -34,7 +34,7 @@ func (p *Page) AddParagraphToPage(block *notion.ParagraphBlock) error {
 		return err
 	}
 
-	p.AddBlock(buff.String())
+	p.AddContent(buff.String())
 
 	return nil
 }

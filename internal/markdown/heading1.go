@@ -34,7 +34,7 @@ func (p *Page) AddHeading1ToPage(block *notion.Heading1Block) error {
 		return err
 	}
 
-	p.AddBlock(mdBuffer.String())
+	p.AddContent(mdBuffer.String())
 
 	return nil
 }

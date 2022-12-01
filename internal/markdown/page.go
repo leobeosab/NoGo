@@ -15,16 +15,26 @@ import (
 type Page struct {
 	sbContent       strings.Builder
 	Title           string
+	Description     string
+	Date            string
 	ID              string
 	NotionID        string
 	tags            []string
 	categories      []string
 	Assets          []PageAsset
-	Type            string
 	AssetDirectory  string // Actual base directory to write to, usually static/...
 	AssetURL        string // URL to base directory. For example if AssetDirectory was static/images/ AssetURL may just be images/ depending on your static site generator
 	BlocksDirectory string // Optional, filepath to the blocks directory, default is to use embedded markdown
 	CoverURL        string
+	Metadata        PageMetadata
+}
+
+type PageMetadata struct {
+	Description   string
+	PublishDate   string
+	NotionID      string
+	CoverFileName string
+	CoverAlt      string
 }
 
 type PageAsset struct {
@@ -35,7 +45,7 @@ type PageAsset struct {
 //go:embed blocks/*
 var pageFiles embed.FS
 
-func NewPage(c *PageContext, title string, notionID string) *Page {
+func NewPage(c *PageContext, title string, notionID string, description string, publishDate string) *Page {
 	id := strings.Replace(strings.ToLower(title), " ", "-", -1)
 
 	blockDirectory := c.Config.BlocksDirectory
@@ -52,6 +62,13 @@ func NewPage(c *PageContext, title string, notionID string) *Page {
 		AssetDirectory:  strings.Replace(c.Config.AssetDirectory, "$PAGE_URI$", id, -1),
 		AssetURL:        strings.Replace(c.Config.AssetURL, "$PAGE_URI$", id, -1),
 		BlocksDirectory: blockDirectory,
+		Metadata: PageMetadata{
+			NotionID:      notionID,
+			Description:   description,
+			PublishDate:   publishDate,
+			CoverFileName: "",
+			CoverAlt:      "",
+		},
 	}
 }
 
@@ -92,10 +109,12 @@ func (p *Page) ImportNotionBlocks(blocks []notion.Block) error {
 	return nil
 }
 
-func (p *Page) AddCover(coverURL string) {
+func (p *Page) AddCover(coverURL string, coverAlt string) {
 	coverURLNoQuery := strings.Split(coverURL, "?")[0]
 	fileType := (coverURLNoQuery)[(len(coverURLNoQuery) - 4):]
 	p.CoverURL = coverURL
+	p.Metadata.CoverFileName = "cover" + fileType
+	p.Metadata.CoverAlt = coverAlt
 	p.AddAsset(coverURL, "cover"+fileType)
 }
 
@@ -106,7 +125,7 @@ func (p *Page) AddAsset(contentURL string, fileName string) {
 	})
 }
 
-func (p *Page) AddBlock(block string) {
+func (p *Page) AddContent(block string) {
 	p.sbContent.WriteString("\n" + block)
 }
 
@@ -146,5 +165,18 @@ func (p *Page) FetchTemplate(templateName string) (*template.Template, error) {
 	}
 
 	fmt.Println("Using built-int template for: ", templateName)
-	return template.ParseFS(pageFiles, "blocks/"+templateName)
+	return template.New(templateName).Funcs(template.FuncMap{
+		"ToStringArray": func(arr []string) string {
+			out := strings.Builder{}
+
+			for index, value := range arr {
+				out.WriteString("\"" + value + "\"")
+				if index != len(arr)-1 {
+					out.WriteString(",")
+				}
+			}
+
+			return out.String()
+		},
+	}).ParseFS(pageFiles, "blocks/"+templateName)
 }

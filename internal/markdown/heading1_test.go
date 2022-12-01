@@ -51,7 +51,7 @@ func TestPage_AddHeading1ToPage(t *testing.T) {
 		expected := item.expected
 		testString := item.testString
 
-		page := NewPage(GenPageContext(), "Test Page 1", "")
+		page := GenPage(testString)
 		err := page.AddHeading1ToPage(&item.notionHeading)
 		if err != nil {
 			t.Fatalf("ERR: %s \n error: %s\n", testString, err)
