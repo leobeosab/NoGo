@@ -24,10 +24,10 @@ func RunNotionMigrations(config *NotionMigrationsConfig) (int, error) {
 			continue
 		}
 
-		// Create Page Base
+		// Create PageBuilder Base
 		title := markdown.RichTextArrToPlainString(info.Title)
 		description := markdown.RichTextArrToPlainString(info.Description)
-		mdPage := markdown.NewPage(c.PageContext(), title, page.ID, description, info.PublishDate)
+		mdPage := markdown.NewPageBuilder(c.PageContext(), title, page.ID, description, info.PublishDate)
 
 		// Add Cover if it exists
 		if info.CoverURL != nil {

@@ -10,7 +10,7 @@ type Code struct {
 	Language string
 }
 
-func (p Page) newCode(block notion.CodeBlock) Code {
+func (p PageBuilder) newCode(block notion.CodeBlock) Code {
 	s := ""
 
 	for _, text := range block.RichText {
@@ -28,7 +28,7 @@ func (p Page) newCode(block notion.CodeBlock) Code {
 	}
 }
 
-func (p *Page) AddCodeToPage(block *notion.CodeBlock) error {
+func (p *PageBuilder) AddCodeToPage(block *notion.CodeBlock) error {
 	md := p.newCode(*block)
 
 	template, err := p.FetchTemplate("CodeTemplate.md")

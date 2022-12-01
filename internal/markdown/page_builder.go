@@ -12,7 +12,7 @@ import (
 	"text/template"
 )
 
-type Page struct {
+type PageBuilder struct {
 	sbContent       strings.Builder
 	Title           string
 	Description     string
@@ -46,7 +46,7 @@ type PageAsset struct {
 //go:embed blocks/*
 var pageFiles embed.FS
 
-func NewPage(c *PageContext, title string, notionID string, description string, publishDate string) *Page {
+func NewPageBuilder(c *PageContext, title string, notionID string, description string, publishDate string) *PageBuilder {
 	id := strings.Replace(strings.ToLower(title), " ", "-", -1)
 
 	blockDirectory := c.Config.BlocksDirectory
@@ -54,7 +54,7 @@ func NewPage(c *PageContext, title string, notionID string, description string, 
 		blockDirectory += "/"
 	}
 
-	return &Page{
+	return &PageBuilder{
 		sbContent:       strings.Builder{},
 		Title:           title,
 		ID:              id,
@@ -73,7 +73,7 @@ func NewPage(c *PageContext, title string, notionID string, description string, 
 	}
 }
 
-func (p *Page) ImportNotionBlocks(blocks []notion.Block) error {
+func (p *PageBuilder) ImportNotionBlocks(blocks []notion.Block) error {
 	for _, block := range blocks {
 		blockType := strings.Replace(reflect.TypeOf(block).String(), "*notion.", "", -1)
 		switch blockType {
@@ -110,7 +110,7 @@ func (p *Page) ImportNotionBlocks(blocks []notion.Block) error {
 	return nil
 }
 
-func (p *Page) AddCover(coverURL string, coverAlt string) {
+func (p *PageBuilder) AddCover(coverURL string, coverAlt string) {
 	coverURLNoQuery := strings.Split(coverURL, "?")[0]
 	fileType := (coverURLNoQuery)[(len(coverURLNoQuery) - 4):]
 	p.CoverURL = coverURL
@@ -119,19 +119,19 @@ func (p *Page) AddCover(coverURL string, coverAlt string) {
 	p.AddAsset(coverURL, "cover"+fileType)
 }
 
-func (p *Page) AddAsset(contentURL string, fileName string) {
+func (p *PageBuilder) AddAsset(contentURL string, fileName string) {
 	p.Assets = append(p.Assets, PageAsset{
 		ContentURL: contentURL,
 		FileName:   fileName,
 	})
 }
 
-func (p *Page) AddContent(block string) {
+func (p *PageBuilder) AddContent(block string) {
 	p.sbContent.WriteString("\n" + block)
 }
 
 // DownloadAssets returns number of assets downloaded
-func (p *Page) DownloadAssets(outputDirectory string) int {
+func (p *PageBuilder) DownloadAssets(outputDirectory string) int {
 	if os.Getenv("NO_OUTPUT_ASSETS") == "TRUE" {
 		return 0
 	}
@@ -150,11 +150,11 @@ func (p *Page) DownloadAssets(outputDirectory string) int {
 	return assetCount
 }
 
-func (p *Page) Build() string {
+func (p *PageBuilder) Build() string {
 	return p.sbContent.String()
 }
 
-func (p *Page) FetchTemplate(templateName string) (*template.Template, error) {
+func (p *PageBuilder) FetchTemplate(templateName string) (*template.Template, error) {
 	// Check custom exists
 	if _, err := os.Stat(p.BlocksDirectory + templateName); err == nil && p.BlocksDirectory != "" {
 		t, err := template.ParseFiles(p.BlocksDirectory + templateName)

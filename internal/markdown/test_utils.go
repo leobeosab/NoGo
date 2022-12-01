@@ -37,6 +37,6 @@ func GenPageContext() *PageContext {
 	}
 }
 
-func GenPage(testName string) *Page {
-	return NewPage(GenPageContext(), "test-page-1", "", "Page for: "+testName, "11-11-2011")
+func GenPage(testName string) *PageBuilder {
+	return NewPageBuilder(GenPageContext(), "test-page-1", "", "PageBuilder for: "+testName, "11-11-2011")
 }

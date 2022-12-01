@@ -13,7 +13,7 @@ type Image struct {
 	FileName  string
 }
 
-func (p *Page) newImage(block notion.ImageBlock) Image {
+func (p *PageBuilder) newImage(block notion.ImageBlock) Image {
 
 	var hostedUrl string
 	if block.File != nil {
@@ -41,7 +41,7 @@ func (p *Page) newImage(block notion.ImageBlock) Image {
 	}
 }
 
-func (p *Page) AddImageToPage(block *notion.ImageBlock) error {
+func (p *PageBuilder) AddImageToPage(block *notion.ImageBlock) error {
 	md := p.newImage(*block)
 
 	template, err := p.FetchTemplate("ImageTemplate.md")

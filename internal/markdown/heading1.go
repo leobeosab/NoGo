@@ -9,7 +9,7 @@ type heading1markdown struct {
 	Text string
 }
 
-func (p Page) newHeading1Markdown(block notion.Heading1Block) heading1markdown {
+func (p PageBuilder) newHeading1Markdown(block notion.Heading1Block) heading1markdown {
 	s, err := p.RichTextArrToString(block.RichText)
 	if err != nil {
 		panic(err)
@@ -20,7 +20,7 @@ func (p Page) newHeading1Markdown(block notion.Heading1Block) heading1markdown {
 	}
 }
 
-func (p *Page) AddHeading1ToPage(block *notion.Heading1Block) error {
+func (p *PageBuilder) AddHeading1ToPage(block *notion.Heading1Block) error {
 	md := p.newHeading1Markdown(*block)
 
 	template, err := p.FetchTemplate("Heading1Template.md")

@@ -15,8 +15,8 @@ type HeaderMarkdown struct {
 	Description   string
 }
 
-// TODO refactor what's in the Page struct
-func (p *Page) SetHeader(categories []string, tags []string) error {
+// TODO refactor what's in the PageBuilder struct
+func (p *PageBuilder) SetHeader(categories []string, tags []string) error {
 
 	header := HeaderMarkdown{
 		Title:         p.Title,

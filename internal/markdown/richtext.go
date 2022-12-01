@@ -20,7 +20,7 @@ type RichTextAnnotations struct {
 	Strikethrough bool
 }
 
-func (p Page) RichTextToString(rt notion.RichText) (string, error) {
+func (p PageBuilder) RichTextToString(rt notion.RichText) (string, error) {
 
 	link := ""
 	if rt.HRef != nil {
@@ -60,7 +60,7 @@ func (p Page) RichTextToString(rt notion.RichText) (string, error) {
 	return result.String(), nil
 }
 
-func (p Page) RichTextArrToString(rt []notion.RichText) (string, error) {
+func (p PageBuilder) RichTextArrToString(rt []notion.RichText) (string, error) {
 
 	outputStr := ""
 	for _, t := range rt {

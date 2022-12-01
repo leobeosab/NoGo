@@ -9,7 +9,7 @@ type Paragraph struct {
 	Text string
 }
 
-func (p Page) newParagraph(block notion.ParagraphBlock) Paragraph {
+func (p PageBuilder) newParagraph(block notion.ParagraphBlock) Paragraph {
 	paragraphStr, err := p.RichTextArrToString(block.RichText)
 	if err != nil {
 		panic(err)
@@ -20,7 +20,7 @@ func (p Page) newParagraph(block notion.ParagraphBlock) Paragraph {
 	}
 }
 
-func (p *Page) AddParagraphToPage(block *notion.ParagraphBlock) error {
+func (p *PageBuilder) AddParagraphToPage(block *notion.ParagraphBlock) error {
 	md := p.newParagraph(*block)
 
 	t, err := p.FetchTemplate("ParagraphTemplate.md")
